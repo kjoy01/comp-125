@@ -10,6 +10,7 @@ var timer; // lab  14
 var testBox; // a box to preview on the splash screen
 var dropTimer; // regulate box drops
 var presents = new Array(0); // an empty array called "presents"
+var score = 0; // keep track of points (starting at 0)
 
 
 function setup() {
@@ -79,6 +80,13 @@ function play() {
     dropTimer.start(); // restart timer for next drop
   }
 
+  textAlign(LEFT);
+  text("elapsed time: " + timer.elapsedTime, 10, 20);
+  // show elapsed time in top left corner
+  textAlign(LEFT);
+  text("Score: " + score, 20, 40);
+
+
   for (let i = 0; i < presents.length; i++) {
     // for each element of the array, represented by 'i', do the following:
     presents[i].display(); // draw it on the canvas
@@ -88,18 +96,18 @@ function play() {
     if (presents[i].y > height) {
       // present went below the canvas
       presents.splice(i, 1); // remove from array
+      score--; // decrement score by 1
     }
     // find distance between presents[i] and player1:
     let d = dist(presents[i].x, presents[i].y, player1.x, player1.y);
     if (d < 50) { // less than 50 pixels?
       presents.splice(i, 1); // remove from array
+      score++; // add 1 point!
     }
   }
 
 
-  textAlign(LEFT);
-  text("elapsed time: " + timer.elapsedTime, 10, 20);
-  // show elapsed time in top left corner
+
 
 
   if (keyIsPressed) {
@@ -129,6 +137,8 @@ function gameOver() {
   textAlign(CENTER);
   textSize(16);
   text("Game Over!", width / 2, height / 2);
+  text("Your final score: " + score, width / 2, height * 2 / 3);
+
 }
 
 
@@ -138,6 +148,7 @@ function mousePressed() {
     gameState = "play";
     timer.start();
     dropTimer.start(); // start the drop timer for present
+    score = 0; // reset score to 0 at start of game
   } else if (gameState == "play") {
     //gameState = "gameOver"
   } if (gameState == "gameOver") {
