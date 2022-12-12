@@ -32,10 +32,27 @@ function Player(tempX, tempY) {
     //draw the triangle:
     //triangle(x1, y1, x2, y2, x3, y3);
     //or draw a complex polygon
+
     beginShape();
-    vertex(x1, y1);
-    vertex(x2, y2);
-    vertex(x3, y3);
+    fill(150, 0, 0)
+    triangle(0, 0, 20, 30, -20, 30)
+    fill(220, 220, 0)
+    rect(-20, 30, 40, 5)
+    fill(160, 0, 0)
+    rect(-17.5, 35, 35, 30)
+    fill(220, 220, 0)
+    rect(-20, 60, 40, 5)
+    
+  
+    line(18, 40, 30, 30)
+    line(18, 50, 30, 40)
+    line(18, 60, 30, 50)
+    line(30, 20, 30, 65)
+
+    line(-18, 40, -30, 30)
+    line(-18, 50, -30, 40)
+    line(-18, 60, -30, 50)
+    line(-30, 20, -30, 65)
     endShape();
     // uncomment the next two lines to see the circle
     // noFill();
@@ -47,20 +64,20 @@ function Player(tempX, tempY) {
   this.thrust = function() {
     let horz = Math.sin(this.angle); // calculate a percentage to the left or right
     let vert = Math.cos(this.angle); // calculate a percentage up or down
-    this.xSpeed += .02 * horz; // modify the basic acceleration factor (.02) by the amount of rotation
-    this.ySpeed -= .02 * vert;
+    this.xSpeed += .06 * horz; // modify the basic acceleration factor (.02) by the amount of rotation
+    this.ySpeed -= .06 * vert;
 
   }
 
   this.brake = function() {
-  if(this.xSpeed > 0)
-    this.xSpeed -= .01; // slow down!
-  else this.xSpeed += .01 // speed was less than 0, so bring it back up
-  if (this.ySpeed > 0)
-    this.ySpeed -= 0; // slow down on y axis, too!
-  else this.ySpeed += .01; // bring up to 0 if we went too far
-    
-}
+    if (this.xSpeed > 0)
+      this.xSpeed -= .06; // slow down!
+    else this.xSpeed += .01 // speed was less than 0, so bring it back up
+    if (this.ySpeed > 0)
+      this.ySpeed -= .06; // slow down on y axis, too!
+    else this.ySpeed += .01; // bring up to 0 if we went too far
+
+  }
   this.move = function() {
     //folow the mouse for now
     this.x += this.xSpeed;
@@ -70,7 +87,5 @@ function Player(tempX, tempY) {
       this.x = abs(this.x - width);
     if (this.y > height || this.y < 0)
       this.y = abs(this.y - height);
-
   }
-  
 }

@@ -4,6 +4,26 @@
  * 
  * Use this template to get started creating a simple 2D game for the web using P5.js. 
  */
+// create Snow object
+function Snow(x, y, size) {
+  // position and size of snowflake
+  this.x = x;
+  this.y = y;
+  this.size = size;
+
+  // display snowflake on canvas
+  this.display = function() {
+    fill(255);
+    noStroke();
+    ellipse(this.x, this.y, this.size);
+  }
+
+  // update snowflake's position
+  this.update = function() {
+    this.y += 1; // move down by 1 pixel
+  }
+}
+
 var gameState = "splash"; // lab 12
 var player1; // lab 13
 var timer; // lab  14
@@ -11,6 +31,9 @@ var testBox; // a box to preview on the splash screen
 var dropTimer; // regulate box drops
 var presents = new Array(0); // an empty array called "presents"
 var score = 0; // keep track of points (starting at 0)
+var snowflakes = new Array(0);
+var snowTimer; // timer for generating new snowflakes
+var speedTimer; // timer for controlling snowfall speed
 
 
 function setup() {
@@ -19,16 +42,26 @@ function setup() {
   player1 = new Player(width / 2, height * 4 / 5)
   console.log(player1);
 
-  timer = new Timer(20000); // 5 second timer
+  timer = new Timer(30000); // 5 second timer
   console.log(timer)
 
   dropTimer = new Timer(1000);
 
   testBox = new Box(width / 2, height / 3);
+  
+  for (let i = 0; i < 100; i++) {
+    // random x and y position and random size
+    let x = random(width);
+    let y = random(height);
+    let size = random(1, 6);
+    let snowflake = new Snow(x, y, size);
+    snowflakes.push(snowflake); // add to array
+  }
+  
 }
 
 function draw() {
-  background(200);
+  background(50);
   /* un-comment each line to see it work */
   //splash(); // call the splash screen function (below)
   //play(); // call the play screen function (below)
@@ -46,6 +79,20 @@ function draw() {
     default:
       console.log("no match found - check your mousePressed() function!");
   }
+
+  for (let i = 0; i < snowflakes.length; i++) {
+    // for each snowflake, update position and display
+    snowflakes[i].update();
+    snowflakes[i].display();
+    // if snowflake goes off the bottom of the canvas,
+    // move it to a random position on the top
+    if (snowflakes[i].y > height) {
+      snowflakes[i].x = random(width);
+      snowflakes[i].y = 0;
+    }
+  }
+
+  
 }
 
 function splash() {
@@ -53,7 +100,7 @@ function splash() {
   background(200);
   textAlign(CENTER);
   textSize(16);
-  text("Let's Play a Game!", width / 2, height / 2);
+  text("Santa's Sleigh Run!", width / 2, height / 2);
   textSize(12);
   text("(click the mouse to continue)", width / 2, height / 2 + 30);
   testBox.display();
@@ -62,13 +109,10 @@ function splash() {
 
 function play() {
   // this is what you see when the game is running 
-  background(0, 200, 0);
-  fill(0, 0, 200);
-  textAlign(CENTER);
-  textSize(16);
-  text("This is where the Game happens", width / 2, height / 2);
+  background(60);
   player1.display();
   player1.move();
+  
 
   if (timer.isFinished()) {
     gameState = "gameOver";
@@ -81,9 +125,11 @@ function play() {
   }
 
   textAlign(LEFT);
+  fill(220)
   text("elapsed time: " + timer.elapsedTime, 10, 20);
   // show elapsed time in top left corner
   textAlign(LEFT);
+  fill(220)
   text("Score: " + score, 20, 40);
 
 
@@ -105,10 +151,6 @@ function play() {
       score++; // add 1 point!
     }
   }
-
-
-
-
 
   if (keyIsPressed) {
     switch (keyCode) {
@@ -141,7 +183,6 @@ function gameOver() {
 
 }
 
-
 function mousePressed() {
   console.log("click!");
   if (gameState == "splash") {
@@ -159,22 +200,22 @@ function mousePressed() {
 function keyPressed() {
   switch (keyCode) {
     case UP_ARROW:
-      player1.y -= 30
+      player1.y -= 20
       player1.angle = 0;
       if (player1.y < 0) player1.y = height; // wrap to bottom
       break;
     case DOWN_ARROW:
-      player1.y += 30
+      player1.y += 20
       player1.angle = PI
       if (player1.y > height) player1.y = 0; // wrap to top
       break;
     case LEFT_ARROW:
-      player1.x -= 30
+      player1.x -= 20
       player1.angle = -PI / 2
       if (player1.x < 0) player1.x = width; // wrap to top
       break;
     case RIGHT_ARROW:
-      player1.x += 30
+      player1.x += 20
       player1.angle = PI / 2
       if (player1.x > width) player1.x = 0; // wrap to top
       break;
@@ -182,3 +223,4 @@ function keyPressed() {
       console.log("use the arrow keys to move");
   }
 }
+
